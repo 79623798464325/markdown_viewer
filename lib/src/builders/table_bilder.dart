@@ -115,6 +115,7 @@ class TableBuilder extends MarkdownElementBuilder {
 
       _tableStack.single.rows.last.children!.add(
         TableCell(
+          key: UniqueKey(),
           verticalAlignment: TableCellVerticalAlignment.top,
           child: Padding(
             padding: tableCellPadding ?? _tableCellPadding,
