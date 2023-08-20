@@ -112,15 +112,18 @@ class TableBuilder extends MarkdownElementBuilder {
       );
     } else if (type == 'tableHeadCell' || type == 'tableBodyCell') {
       final children = element.children;
+      final cell = children.isEmpty
+          ? const SizedBox.shrink()
+          : Padding(
+              padding: tableCellPadding ?? _tableCellPadding,
+              child: children.last,
+            );
 
       _tableStack.single.rows.last.children!.add(
         TableCell(
           key: UniqueKey(),
           verticalAlignment: TableCellVerticalAlignment.top,
-          child: Padding(
-            padding: tableCellPadding ?? _tableCellPadding,
-            child: children.isEmpty ? const SizedBox.shrink() : children.single,
-          ),
+          child: cell,
         ),
       );
     }
