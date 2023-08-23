@@ -116,7 +116,11 @@ class TableBuilder extends MarkdownElementBuilder {
           ? const SizedBox.shrink()
           : Padding(
               padding: tableCellPadding ?? _tableCellPadding,
-              child: children.last,
+              child: children.length == 1
+                  ? children.single
+                  : Row(
+                      children: children,
+                    ),
             );
 
       _tableStack.single.rows.last.children!.add(
