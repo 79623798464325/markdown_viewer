@@ -119,6 +119,7 @@ class TableBuilder extends MarkdownElementBuilder {
               child: children.length == 1
                   ? children.single
                   : Row(
+                      mainAxisSize: MainAxisSize.min,
                       children: children,
                     ),
             );
