@@ -47,7 +47,7 @@ class MarkdownRenderer implements NodeVisitor {
           fontSize: 16,
           height: 1.5,
           color: (context != null
-                  ? Theme.of(context).textTheme.bodyText2?.color
+                  ? Theme.of(context).textTheme.bodyMedium?.color
                   : null) ??
               const Color(0xff333333),
         ),
