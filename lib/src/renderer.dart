@@ -324,11 +324,7 @@ class _TreeElement extends MarkdownTreeElement {
 }
 
 void _checkInlineWidget(Widget widget) {
-  final allowedInlineWidgets = [
-    RichText,
-    Text,
-    DefaultTextStyle,
-  ];
+  final allowedInlineWidgets = [RichText, Text, DefaultTextStyle, Image];
 
   assert(
     allowedInlineWidgets.contains(widget.runtimeType),
