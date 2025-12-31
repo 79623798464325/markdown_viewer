@@ -239,10 +239,10 @@ Edit: I oopsed.
       }
       expect(foundIndicator, true, reason: 'Should find collapsed indicator');
 
-      // Verify the image placeholder exists (our custom imageBuilder was called)
+      // Verify the image placeholder DOES NOT exist (content is not built when hidden)
       final imagePlaceholder = find.byKey(const Key('test-image'));
-      expect(imagePlaceholder, findsOneWidget,
-          reason: 'Spoiler should contain an image');
+      expect(imagePlaceholder, findsNothing,
+          reason: 'Spoiler should NOT contain an image when collapsed');
     });
 
     testWidgets('renders spoiler with image content - expanded',

@@ -56,26 +56,10 @@ class SpoilerBuilder extends MarkdownElementBuilder {
 
   @override
   Widget? buildWidget(MarkdownTreeElement element, MarkdownTreeElement parent) {
-    final spoilerTitle =
-        element.attributes['text']?.replaceAll('\n', '') ?? 'Spoiler';
-
-    // Get effective brightness for spoiler styling
-    // Use provided brightness, or try to get from context, or default to light
-    Brightness effectiveBrightness;
-    if (brightness != null) {
-      effectiveBrightness = brightness!;
-    } else if (context != null) {
-      effectiveBrightness = MediaQuery.platformBrightnessOf(context!);
-    } else {
-      effectiveBrightness = Brightness.light;
-    }
-
-    final spoilerColor =
-        effectiveBrightness == Brightness.dark ? Colors.white : Colors.black;
-
-    // Transform children to apply spoiler styling when hidden
-    if (!isShowing) {
-      _applySpoilerStyling(element.children, spoilerColor);
+    var spoilerTitle =
+        element.attributes['text']?.replaceAll('\n', '').trim() ?? 'Spoiler';
+    if (spoilerTitle.isEmpty) {
+      spoilerTitle = 'Spoiler';
     }
 
     // Build the indicator
@@ -103,14 +87,8 @@ class SpoilerBuilder extends MarkdownElementBuilder {
     final contentWidgets = <Widget>[];
     contentWidgets.add(indicator);
 
+    // Only add children if showing
     if (isShowing) {
-      // Add the rendered content when showing
-      final baseWidget = super.buildWidget(element, parent);
-      if (baseWidget != null) {
-        contentWidgets.add(baseWidget);
-      }
-    } else {
-      // Add hidden content (styled to be invisible)
       final baseWidget = super.buildWidget(element, parent);
       if (baseWidget != null) {
         contentWidgets.add(baseWidget);
@@ -139,65 +117,6 @@ class SpoilerBuilder extends MarkdownElementBuilder {
     }
 
     return result;
-  }
-
-  void _applySpoilerStyling(List<Widget> children, Color spoilerColor) {
-    for (var i = 0; i < children.length; i++) {
-      final child = children[i];
-
-      if (child is Padding && child.child is Column) {
-        _applySpoilerStyling((child.child! as Column).children, spoilerColor);
-      } else if (child is Column) {
-        _applySpoilerStyling(child.children, spoilerColor);
-      } else if (child is RichText) {
-        children[i] = _transformRichText(child, spoilerColor);
-      }
-    }
-  }
-
-  Widget _transformRichText(RichText richText, Color spoilerColor) {
-    final textSpan = richText.text;
-    if (textSpan is! TextSpan) return richText;
-
-    final transformedSpan = _transformTextSpan(textSpan, spoilerColor);
-    return RichText(
-      text: transformedSpan,
-      textAlign: richText.textAlign,
-      selectionColor: richText.selectionColor,
-      selectionRegistrar: richText.selectionRegistrar,
-    );
-  }
-
-  TextSpan _transformTextSpan(TextSpan span, Color spoilerColor) {
-    final baseStyle = span.style ?? const TextStyle();
-
-    // When hidden: text color = background color (invisible text on matching bg)
-    final spoilerStyle = TextStyle(
-      color: spoilerColor,
-      backgroundColor: spoilerColor,
-      fontSize: baseStyle.fontSize,
-      fontWeight: baseStyle.fontWeight,
-      fontStyle: baseStyle.fontStyle,
-      fontFamily: baseStyle.fontFamily,
-      letterSpacing: baseStyle.letterSpacing,
-      wordSpacing: baseStyle.wordSpacing,
-      height: baseStyle.height,
-      decoration: baseStyle.decoration,
-      decorationColor: baseStyle.decorationColor,
-      decorationStyle: baseStyle.decorationStyle,
-      decorationThickness: baseStyle.decorationThickness,
-      inherit: false,
-    );
-
-    return TextSpan(
-      text: span.text,
-      style: spoilerStyle,
-      children: span.children
-          ?.map((child) => child is TextSpan
-              ? _transformTextSpan(child, spoilerColor)
-              : child)
-          .toList(),
-    );
   }
 
   @override
