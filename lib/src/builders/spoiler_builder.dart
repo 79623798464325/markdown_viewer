@@ -65,14 +65,19 @@ class SpoilerBuilder extends MarkdownElementBuilder {
     // Build the indicator
     final indicatorText = isShowing ? '▲ $spoilerTitle' : '► $spoilerTitle';
 
-    // Use provided indicator color, or try to get from theme, or use default
+    // Use provided indicator color, or inherit from text style, or use default
     Color effectiveIndicatorColor;
     if (indicatorColor != null) {
       effectiveIndicatorColor = indicatorColor!;
     } else if (context != null) {
-      effectiveIndicatorColor = Theme.of(context!).colorScheme.secondary;
+      // Inherit the default text color from theme instead of using secondary color
+      effectiveIndicatorColor =
+          Theme.of(context!).textTheme.bodyMedium?.color ??
+              textStyle?.color ??
+              const Color(0xff333333); // Fallback to neutral dark gray
     } else {
-      effectiveIndicatorColor = const Color(0xff6200ee); // Default purple
+      effectiveIndicatorColor = textStyle?.color ??
+          const Color(0xff333333); // Fallback to neutral dark gray
     }
 
     // Create indicator widget
