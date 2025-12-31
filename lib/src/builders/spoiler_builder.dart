@@ -23,6 +23,7 @@ class SpoilerBuilder extends MarkdownElementBuilder {
     this.isShowing = false,
     this.brightness,
     this.revealedTextColor,
+    this.textColor,
     this.indicatorColor,
     this.padding,
   });
@@ -45,7 +46,12 @@ class SpoilerBuilder extends MarkdownElementBuilder {
   /// Falls back to the original text color if not provided.
   final Color? revealedTextColor;
 
+  /// Color for the spoiler toggle text.
+  /// Falls back to indicatorColor, then theme text color, then textStyle color.
+  final Color? textColor;
+
   /// Color for the expand/collapse indicator.
+  /// Deprecated: Use textColor instead.
   final Color? indicatorColor;
 
   /// Padding around the spoiler block.
@@ -65,26 +71,31 @@ class SpoilerBuilder extends MarkdownElementBuilder {
     // Build the indicator
     final indicatorText = isShowing ? '▲ $spoilerTitle' : '► $spoilerTitle';
 
-    // Use provided indicator color, or inherit from text style, or use default
-    Color effectiveIndicatorColor;
-    if (indicatorColor != null) {
-      effectiveIndicatorColor = indicatorColor!;
+    // Use provided textColor, or indicatorColor for backwards compatibility,
+    // or inherit from DefaultTextStyle (which inherits from consuming app), or use textStyle
+    Color effectiveTextColor;
+    if (textColor != null) {
+      effectiveTextColor = textColor!;
+    } else if (indicatorColor != null) {
+      effectiveTextColor = indicatorColor!;
     } else if (context != null) {
-      // Inherit the default text color from theme instead of using secondary color
-      effectiveIndicatorColor =
+      // Inherit from DefaultTextStyle which correctly inherits from consuming app
+      final defaultStyle = DefaultTextStyle.of(context!);
+      effectiveTextColor = defaultStyle.style.color ??
+          textStyle?.color ??
           Theme.of(context!).textTheme.bodyMedium?.color ??
-              textStyle?.color ??
-              const Color(0xff333333); // Fallback to neutral dark gray
+          Colors
+              .white; // Fallback to white (works on both light and dark themes as fallback)
     } else {
-      effectiveIndicatorColor = textStyle?.color ??
-          const Color(0xff333333); // Fallback to neutral dark gray
+      effectiveTextColor = textStyle?.color ?? Colors.white;
     }
 
-    // Create indicator widget
+    // Create indicator widget with proper text styling (color AND font size)
     final indicator = RichText(
       text: TextSpan(
         text: indicatorText,
-        style: TextStyle(color: effectiveIndicatorColor),
+        style: textStyle?.copyWith(color: effectiveTextColor) ??
+            TextStyle(color: effectiveTextColor),
       ),
     );
 
