@@ -124,7 +124,7 @@ class TableBuilder extends MarkdownElementBuilder {
                     ),
             );
 
-      _tableStack.single.rows.last.children!.add(
+      _tableStack.single.rows.last.children.add(
         TableCell(
           key: UniqueKey(),
           verticalAlignment: TableCellVerticalAlignment.top,

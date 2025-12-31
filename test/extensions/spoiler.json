@@ -1,0 +1,82 @@
+[
+    {
+        "description": "Simple spoiler - collapsed state",
+        "markdown": "::: spoiler Click to reveal\nHidden content here\n:::\n",
+        "expected": [
+            {
+                "type": "Column",
+                "children": [
+                    {
+                        "type": "RichText",
+                        "textAlign": "TextAlign.start",
+                        "text": {
+                            "type": "TextSpan",
+                            "text": "► Click to reveal",
+                            "style": {
+                                "color": "Color(0xff6200ee)"
+                            }
+                        }
+                    },
+                    {
+                        "type": "Column",
+                        "children": [
+                            {
+                                "type": "RichText",
+                                "textAlign": "TextAlign.start",
+                                "text": {
+                                    "type": "TextSpan",
+                                    "text": "Hidden content here",
+                                    "style": {
+                                        "fontSize": 16.0,
+                                        "color": "Color(0xff333333)",
+                                        "backgroundColor": "Color(0xff333333)"
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "description": "Spoiler with multiline content - collapsed",
+        "markdown": "::: spoiler Secret Info\nLine one\nLine two\n:::\n",
+        "expected": [
+            {
+                "type": "Column",
+                "children": [
+                    {
+                        "type": "RichText",
+                        "textAlign": "TextAlign.start",
+                        "text": {
+                            "type": "TextSpan",
+                            "text": "► Secret Info",
+                            "style": {
+                                "color": "Color(0xff6200ee)"
+                            }
+                        }
+                    },
+                    {
+                        "type": "Column",
+                        "children": [
+                            {
+                                "type": "RichText",
+                                "textAlign": "TextAlign.start",
+                                "text": {
+                                    "type": "TextSpan",
+                                    "text": "Line one Line two",
+                                    "style": {
+                                        "fontSize": 16.0,
+                                        "color": "Color(0xff333333)",
+                                        "backgroundColor": "Color(0xff333333)"
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

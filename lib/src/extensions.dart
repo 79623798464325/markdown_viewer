@@ -108,8 +108,8 @@ extension TableRowExtensions on TableRow {
   Map<String, dynamic> toMap() {
     return {
       'type': runtimeType.toString(),
-      if (children != null && children!.isNotEmpty)
-        'children': children!.map((e) => e.toMap()).toList(),
+      if (children.isNotEmpty)
+        'children': children.map((e) => e.toMap()).toList(),
     };
   }
 }
@@ -177,16 +177,26 @@ extension TextStyleExtensions on TextStyle {
         if (fontWeight != null) 'fontWeight': fontWeight.toString(),
         if (fontSize != null) 'fontSize': fontSize,
         if (fontStyle != null) 'fontStyle': fontStyle.toString(),
-        if (color != null) 'color': color.toString(),
+        if (color != null) 'color': _colorToHex(color!),
         if (decoration != null && decoration != TextDecoration.none)
           'decoration': decoration.toString(),
         if (backgroundColor != null)
-          'backgroundColor': backgroundColor.toString(),
+          'backgroundColor': _colorToHex(backgroundColor!),
         if (fontFeatures != null)
           'fontFeatures': fontFeatures!.map((e) => e.toString()).toList(),
       };
 
   String toPrettyString() => toMap().toPrettyString();
+}
+
+/// Converts a Color to a consistent hex format for test compatibility.
+/// This ensures tests pass regardless of Flutter version changes to Color.toString().
+String _colorToHex(Color color) {
+  final a = (color.a * 255).round().toRadixString(16).padLeft(2, '0');
+  final r = (color.r * 255).round().toRadixString(16).padLeft(2, '0');
+  final g = (color.g * 255).round().toRadixString(16).padLeft(2, '0');
+  final b = (color.b * 255).round().toRadixString(16).padLeft(2, '0');
+  return 'Color(0x$a$r$g$b)';
 }
 
 extension ListExtensions on List<dynamic> {
