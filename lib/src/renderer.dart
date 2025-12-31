@@ -182,10 +182,17 @@ class MarkdownRenderer implements NodeVisitor {
   @override
   bool visitElementBefore(MarkdownElement element) {
     final type = element.type;
-    assert(_builders[type] != null, "No $type builder found");
+    final builder = _builders[type];
+    if (builder == null) {
+      throw StateError(
+        'No builder found for element type "$type". '
+        'If you are using a custom syntax extension (e.g., SpoilerBlockSyntax), '
+        'you must also provide the corresponding builder (e.g., SpoilerBuilder) '
+        'in the elementBuilders parameter.',
+      );
+    }
 
     final parentTreeElement = _tree.last;
-    final builder = _builders[type]!;
     builder.init(element);
 
     builder.parentStyle = parentTreeElement.style;
