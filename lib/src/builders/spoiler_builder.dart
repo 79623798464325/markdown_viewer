@@ -73,22 +73,30 @@ class SpoilerBuilder extends MarkdownElementBuilder {
 
     // Use provided textColor, or indicatorColor for backwards compatibility,
     // or inherit from DefaultTextStyle (which inherits from consuming app), or use textStyle
-    Color effectiveTextColor;
+    Color? resolvedColor;
     if (textColor != null) {
-      effectiveTextColor = textColor!;
+      resolvedColor = textColor;
     } else if (indicatorColor != null) {
-      effectiveTextColor = indicatorColor!;
-    } else if (context != null) {
-      // Inherit from DefaultTextStyle which correctly inherits from consuming app
-      final defaultStyle = DefaultTextStyle.of(context!);
-      effectiveTextColor = defaultStyle.style.color ??
-          textStyle?.color ??
-          Theme.of(context!).textTheme.bodyMedium?.color ??
-          Colors
-              .white; // Fallback to white (works on both light and dark themes as fallback)
+      resolvedColor = indicatorColor;
     } else {
-      effectiveTextColor = textStyle?.color ?? Colors.white;
+      resolvedColor = element.style?.color ??
+          (context != null
+              ? DefaultTextStyle.of(context!).style.color
+              : null) ??
+          textStyle?.color ??
+          (context != null
+              ? Theme.of(context!).textTheme.bodyMedium?.color
+              : null);
     }
+
+    if (resolvedColor == null) {
+      return Text(
+        'Error: Could not determine text color for spoiler',
+        style: TextStyle(color: Colors.red),
+      );
+    }
+
+    final effectiveTextColor = resolvedColor;
 
     // Create indicator widget with proper text styling (color AND font size)
     final indicator = RichText(

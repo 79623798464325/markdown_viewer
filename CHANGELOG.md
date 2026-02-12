@@ -1,3 +1,8 @@
+## 0.6.3
+
+- Fix SpoilerBuilder title color issue in light theme.
+- Display error message when spoiler text color cannot be resolved.
+
 ## 0.6.2
 - Update `dart_markdown` dependency to 3.1.7.
 
